@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do Liste Interactive</title>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="./css/style.css">
+    
+    <!-- Intégration de FullCalendar -->
+    <script src='./fullcalendar/dist/index.global.js'></script>
+</head>
+
+<body>
+      <!-- En-tête de la page -->
+    <header>
+        <nav>
+            <div class="navbar">
+                <h1>Todo Liste Online</h1>
+                <div class="nav-links">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#addTaskModal">+ Ajouter une tâche</a>
+                    <a href="index.html">accueille</a>
+                </div>
+             </div>
+        </nav>
+    </header>
+    <!-- Contenu principal -->
+    <main>
+        <!-- Menu de navigation -->
+        <section class="menu-buttons">
+        <!-- Modal d'ajout de tâche -->
+            <div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Ajouter une nouvelle tâche</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="taskForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Titre de la tâche *</label>
+                                    <input type="text" id="taskTitle" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Date *</label>
+                                    <input type="date" id="taskDate" class="form-control" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Heure de début *</label>
+                                        <input type="time" id="taskStart" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Heure de fin</label>
+                                        <input type="time" id="taskEnd" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="taskDesc" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">État</label>
+                                    <select id="taskState" class="form-select">
+                                        <option value="en attente">En attente</option>
+                                        <option value="en cours">En cours</option>
+                                        <option value="terminée">Terminée</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-primary" id="saveTaskBtn">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section principale avec le calendrier -->
+        <section class="content">
+            <div class="section-block calendar-block">
+                <h2>Les tâches:</h2>
+                <div id='calendar-container'>
+                    <div id='calendar'></div> <!-- Calendrier -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; To do liste interactive pour étudiant, Inc. - ESP Antsiranana <span id="year"></span></p>
+    </footer>
+
+    <!-- bootstrap js -->
+    <script src="./bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/script.js"></script>
+        <script>
+            // Mise à jour de l'année dans le footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Initialisation du calendrier
+            document.addEventListener('DOMContentLoaded', function() {
+                var calendarEl = document.getElementById('calendar');
+                
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    height: 'auto',
+                    expandRows: true,
+                    slotMinTime: '01:00',
+                    slotMaxTime: '23:00',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    },
+                    initialView: 'dayGridMonth',
+                    initialDate: '2025-02-01', // Date initiale sur février 2025
+                    navLinks: true,
+                    editable: true,
+                    selectable: true,
+                    nowIndicator: true,
+                    dayMaxEvents: true,
+                    events: [
+                        // Février - Tâches terminées (rouge)
+                        {
+                            id: 1,
+                            title: 'Révision contrat client',
+                            start: '2025-02-05T09:00:00',
+                            end: '2025-02-05T11:00:00',
+                            description: 'Révision du contrat avec le client principal',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+                        {
+                            id: 2,
+                            title: 'Présentation résultats',
+                            start: '2025-02-12T14:00:00',
+                            end: '2025-02-12T15:30:00',
+                            description: 'Présentation des résultats trimestriels',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+                        {
+                            id: 3,
+                            title: 'Formation équipe',
+                            start: '2025-02-20T10:00:00',
+                            end: '2025-02-20T17:00:00',
+                            description: 'Formation sur le nouveau logiciel',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+
+                        // Mars - Tâches terminées (rouge)
+                        {
+                            id: 4,
+                            title: 'Audit qualité',
+                            start: '2025-03-03T09:00:00',
+                            end: '2025-03-03T12:00:00',
+                            description: 'Audit qualité semestriel',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+                        {
+                            id: 5,
+                            title: 'Réunion stratégique',
+                            start: '2025-03-10T13:00:00',
+                            end: '2025-03-10T15:00:00',
+                            description: 'Planification stratégique pour Q2',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+                        {
+                            id: 6,
+                            title: 'Maintenance serveur',
+                            start: '2025-03-17T18:00:00',
+                            end: '2025-03-17T22:00:00',
+                            description: 'Maintenance planifiée du serveur principal',
+                            color: '#ff0000',
+                            textColor: '#ffffff',
+                            etat: 'terminée'
+                        },
+
+                        // Avril - Tâches en cours (jaune)
+                        {
+                            id: 7,
+                            title: 'Développement module',
+                            start: '2025-04-02T09:00:00',
+                            end: '2025-04-02T17:00:00',
+                            description: 'Développement du nouveau module utilisateur',
+                            color: '#ffff00',
+                            textColor: '#000000',
+                            etat: 'en cours'
+                        },
+                        {
+                            id: 8,
+                            title: 'Tests intégration',
+                            start: '2025-04-09T10:00:00',
+                            end: '2025-04-09T16:00:00',
+                            description: 'Tests d\'intégration du système',
+                            color: '#ffff00',
+                            textColor: '#000000',
+                            etat: 'en cours'
+                        },
+                        {
+                            id: 9,
+                            title: 'Révision documentation',
+                            start: '2025-04-15T14:00:00',
+                            end: '2025-04-15T16:00:00',
+                            description: 'Révision de la documentation technique',
+                            color: '#ffff00',
+                            textColor: '#000000',
+                            etat: 'en cours'
+                        },
+                        {
+                            id: 10,
+                            title: 'Analyse performance',
+                            start: '2025-04-22T11:00:00',
+                            end: '2025-04-22T13:00:00',
+                            description: 'Analyse des performances système',
+                            color: '#ffff00',
+                            textColor: '#000000',
+                            etat: 'en cours'
+                        },
+
+                        // Mai - Tâches en attente (bleu marine)
+                        {
+                            id: 11,
+                            title: 'Migration base de données',
+                            start: '2025-05-07T09:00:00',
+                            end: '2025-05-07T18:00:00',
+                            description: 'Migration vers la nouvelle base de données',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 12,
+                            title: 'Formation nouveaux employés',
+                            start: '2025-05-14T10:00:00',
+                            end: '2025-05-14T12:00:00',
+                            description: 'Formation des nouveaux employés',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 13,
+                            title: 'Mise à jour sécurité',
+                            start: '2025-05-21T14:00:00',
+                            end: '2025-05-21T16:00:00',
+                            description: 'Application des patches de sécurité',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+
+                        // Juin - Tâches en attente (bleu marine)
+                        {
+                            id: 14,
+                            title: 'Planification vacances',
+                            start: '2025-06-04T11:00:00',
+                            end: '2025-06-04T12:00:00',
+                            description: 'Planification des vacances d\'été',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 15,
+                            title: 'Évaluation semestrielle',
+                            start: '2025-06-11T09:00:00',
+                            end: '2025-06-11T17:00:00',
+                            description: 'Évaluation des performances semestrielles',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+
+                        // Juillet - Tâches en attente (bleu marine)
+                        {
+                            id: 16,
+                            title: 'Audit financier',
+                            start: '2025-07-09T10:00:00',
+                            end: '2025-07-09T15:00:00',
+                            description: 'Audit financier semestriel',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 17,
+                            title: 'Mise à jour infrastructure',
+                            start: '2025-07-16T13:00:00',
+                            end: '2025-07-16T17:00:00',
+                            description: 'Mise à jour de l\'infrastructure réseau',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+
+                        // Août - Tâches en attente (bleu marine)
+                        {
+                            id: 18,
+                            title: 'Préparation rentrée',
+                            start: '2025-08-06T09:00:00',
+                            end: '2025-08-06T11:00:00',
+                            description: 'Préparation de la rentrée septembre',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 19,
+                            title: 'Revue contrat fournisseurs',
+                            start: '2025-08-13T14:00:00',
+                            end: '2025-08-13T16:00:00',
+                            description: 'Revue des contrats avec les principaux fournisseurs',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        },
+                        {
+                            id: 20,
+                            title: 'Planification projet Q3',
+                            start: '2025-08-27T10:00:00',
+                            end: '2025-08-27T12:00:00',
+                            description: 'Planification des projets pour le 3ème trimestre',
+                            color: '#000080',
+                            textColor: '#ffffff',
+                            etat: 'en attente'
+                        }
+                    ],
+                    
+                    // Gestion du clic sur un événement
+                    eventClick: function(info) {
+                        alert('Tâche: ' + info.event.title + 
+                            '\nÉtat: ' + (info.event.extendedProps.etat || 'Non spécifié') + 
+                            '\nDébut: ' + info.event.start.toLocaleString() + 
+                            '\nDescription: ' + (info.event.extendedProps.description || 'Aucune description'));
+                        
+                        // Option: changer la couleur quand on clique
+                        // info.event.setProp('color', '#00ff00');
+                    },
+                    
+                    // Gestion de la sélection d'une plage horaire
+                    select: function(info) {
+                        var title = prompt('Entrez le titre de la nouvelle tâche:');
+                        if (title) {
+                            calendar.addEvent({
+                                title: title,
+                                start: info.start,
+                                end: info.end,
+                                color: '#4682b4',
+                                etat: 'nouvelle'
+                            });
+                        }
+                    }
+                });
+
+                calendar.render();
+                
+            
+             // Gestion de l'ajout de tâche
+             document.getElementById('saveTaskBtn').addEventListener('click', function() {
+                const title = document.getElementById('taskTitle').value;
+                const date = document.getElementById('taskDate').value;
+                const start = document.getElementById('taskStart').value;
+                const end = document.getElementById('taskEnd').value;
+                const desc = document.getElementById('taskDesc').value;
+                const state = document.getElementById('taskState').value;
+                
+                if (!title || !date || !start) {
+                    alert('Veuillez remplir les champs obligatoires (*)');
+                    return;
+                }
+
+                // Déterminer la couleur selon l'état
+                let color;
+                switch(state) {
+                    case 'terminée': color = '#ff0000'; break;
+                    case 'en cours': color = '#ffff00'; break;
+                    default: color = '#000080'; // en attente
+                }
+
+                // Créer l'objet tâche au format JSON
+                const newTask = {
+                    title: title,
+                    start: date + 'T' + start,
+                    end: end ? date + 'T' + end : null,
+                    description: desc,
+                    etat: state,
+                    color: color,
+                    textColor: state === 'en cours' ? '#000000' : '#ffffff'
+                };
+
+                // Ajouter la tâche au calendrier
+                calendar.addEvent(newTask);
+                
+                // Ici, vous pourriez envoyer les données au serveur via AJAX
+                // fetch('taches.php', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(newTask)
+                // }).then(response => ...);
+
+                // Réinitialiser le formulaire
+                document.getElementById('taskForm').reset();
+                
+                // Fermer le modal
+                var modal = bootstrap.Modal.getInstance(document.getElementById('addTaskModal'));
+                modal.hide();
+                
+                // Message de succès
+                alert('Tâche ajoutée avec succès!');
+            });
+
+            // Initialiser la date du jour dans le formulaire
+            const today = new Date();
+            document.getElementById('taskDate').value = today.toISOString().substr(0, 10);
+        });
+    </script>
+</body>
+</html>
